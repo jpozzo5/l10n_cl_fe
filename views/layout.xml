@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="dte_header" t-name="dte_header">
+		<div class="header">
+			<div class="row">
+				<table class="table table-sm" style="margin-bottom:0px !important;">
+					<tbody>
+						<tr>
+							<td>
+								<img t-if="logo" t-att-src="'data:image/png;base64,%s' % to_text(logo)"
+									style="max-height: 145px; width: 128px;" />
+							</td>
+							<td>
+								<h4 style="text-transform:uppercase;font-weight:900;">
+									<span t-field="company.name" />
+								</h4>
+								<t t-if="company.activity_description">
+									<span t-field="company.activity_description.name" />
+									<br />
+								</t>
+								<!-- domicilios -->
+								<strong>Casa Matriz: </strong>
+								<span t-field="company.street" />, <span t-field="company.city_id.name" />, <span t-field="company.state_id.name" />
+								<br />
+								<strong>Fono: </strong>
+								<span t-field="company.phone" />
+								<br />
+							</td>
+							<td>
+								<div class="float-right">
+									<div
+										style="border: 3px solid red; text-align: center;font-size: 18px;padding: 4px !important; height:3.8cm; width:7.5cm;">
+										<h6
+											style="color:red;font-size:18px;padding-bottom:5px; padding-top:5px; font-family:Arial;">
+											R.U.T.:
+											<span t-field="company.document_number" />
+										</h6>
+										<h6 name="document_class_id" t-if="document_class_id"
+											style="line-height:20px;font-size:18px;color:red;text-align:center;text-transform:uppercase;padding-bottom:5px;font-family:Arial;">
+											<span t-field="document_class_id.name" />
+										</h6>
+										<h6 t-if="sii_document_number"
+											style="color: red;text-align: center;font-size:18px;padding-bottom:5px;font-family:Arial;">
+											N°
+											<span t-esc="sii_document_number" />
+										</h6>
+										<br />
+									</div>
+									<div
+										style="text-align: center; margin-top:0px !important; padding-top:0px!important;">
+										<h7
+											style="color:red;text-align:center;font-size:11px;text-transform:uppercase;">
+											SII -
+											<span t-field="o.company_id.sii_regional_office_id.name" />
+										</h7>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="row" style="display:none !important;">
+				<div name="company_address" />
+			</div>
+		</div>
+	</template>
+
+	<template id="dte_header_customer" t-name="dte_header_customer">
+		<div class="row mb8 div-bordered">
+			<t t-set="style_partner" t-value="'border-top:0px !important;padding:0px !important;width: 60%;'" />
+			<table class="table cl_invoice" style="margin-bottom:0px !important;" id="header_customer">
+				<tbody>
+					<tr style="max-height:15px; font-size:11px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Señor (es):</strong>
+						</td>
+						<td
+							t-att-style="style_partner">
+							<span t-field="commercial_partner_id.display_name" />
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>RUT:</strong>
+						</td>
+						<td
+							style="border-top:0px !important;padding:0px !important;width: 15%;">
+							<span t-field="commercial_partner_id.document_number" />
+						</td>
+					</tr>
+					<tr style="max-height:15px; font-size:11px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Direccion:</strong>
+						</td>
+						<td
+							style="border-top:0px !important;padding:0px !important;">
+							<span t-field="partner_id.street" />
+							<span t-field="partner_id.street2" />
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Comuna:</strong>
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<span t-field="partner_id.city_id.name" />
+						</td>
+					</tr>
+					<tr style="max-height:15px; font-size:11px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Giro:</strong>
+						</td>
+						<td
+							style="border-top:0px !important;padding:0px !important;">
+							<span t-field="commercial_partner_id.activity_description.name" />
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Telefono:</strong>
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<span t-field="partner_id.phone" />
+						</td>
+					</tr>
+					<tr style="max-height:15px; font-size:11px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong t-if="'payment_term_id' in o and o.payment_term_id">Condicion de pago:</strong>
+						</td>
+					   <td style="border-top:0px !important;padding:0px !important;">
+					      <span t-field="o.payment_term_id.name"/>
+				
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+
+						</td>
+					</tr>
+
+					<tr style="max-height:15px; font-size:11px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Vendedor</strong>
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<span t-field="o.user_id.name"/>
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Telefono:</strong>
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<span t-esc="o.user_id.mobile"/>
+						</td>
+					</tr>
+
+
+					<tr style="max-height:15px; font-size:11px !important;" id="last_row">
+						<t t-if="'contact_id' in o and o.contact_id">
+							<td style="border-top:0px !important;padding:0px !important;">
+								<strong>Contacto:</strong>
+							</td>
+							<td
+								style="border-top:0px !important;padding:0px !important;">
+								<span t-field="o.contact_id.name"/>, <span t-field="o.contact_id.street"/>, <span t-field="o.contact_id.city_id.name"/>
+							</td>
+						</t>
+						<t t-if="'picking_type_id' in o and o.picking_type_id">
+							<td style="border-top:0px !important;padding:0px !important;">
+								<strong>Sucursal:</strong>
+							</td>
+							<td colspan="99"
+								style="border-top:0px !important;padding:0px !important;">
+								<span t-field="o.picking_type_id.warehouse_id.name"/>
+							</td>
+						</t>
+						<t t-if="'partner_shipping_id' in o and o.partner_shipping_id != partner_id">
+							<td style="border-top:0px !important;padding:0px !important;">
+								<strong>Sucursal:</strong>
+							</td>
+							<td colspan="99" groups="sale.group_delivery_invoice_address"
+								style="border-top:0px !important;padding:0px !important;">
+								<span t-field="o.partner_shipping_id.name"/>, <span t-field="o.partner_shipping_id.street"/>, <span t-field="o.partner_shipping_id.city_id.name"/>
+							</td>
+						</t>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</template>
+
+	<template id="dte_references" t-name="dte_references">
+		<div class="row mb8" style="min-height:20px;"
+			name="reference">
+			<table class="table table-sm table-bordered-line" style="padding:10px;">
+				<thead>
+					<tr class="row-bordered" style="background-color:#9E9E9E;">
+						<th>
+							<strong>Tipo de documento:</strong>
+						</th>
+						<th>
+							<strong>Folio:</strong>
+						</th>
+						<th>
+							<strong>Fecha del documento</strong>
+						</th>
+						<th>
+							<strong>Razón Referencia:</strong>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<t t-if="'referencias' in o and o.referencias">
+						<t t-foreach="o.referencias" t-as="l">
+							<tr style="max-height:8px;line-height:10px !important;">
+								<td style="border-top:0px !important;padding:0px !important;">
+									<span t-if="l.sii_referencia_TpoDocRef" t-field="l.sii_referencia_TpoDocRef.name" />
+								</td>
+								<td style="max-height:8px;line-height:10px !important;">
+									<span t-if="l.origen" t-field="l.origen" />
+								</td>
+								<td style="max-height:8px;line-height:10px !important;">
+									<span t-if="l.fecha_documento" t-field="l.fecha_documento" />
+								</td>
+								<td name="reference" style="max-height:8px;line-height:10px !important;">
+									<t t-if="l.sii_referencia_CodRef">
+										<span t-esc="l.sii_referencia_CodRef[0]" />
+										<span t-field="l.sii_referencia_CodRef" />
+										:
+									</t>
+									<span t-if="l.motivo" t-field="l.motivo" />
+								</td>
+							</tr>
+						</t>
+					</t>
+					<t t-else="">
+						<tr class="text-center" style="max-height:15px; font-size:12px !important;">
+							<td style="max-height:8px;line-height:10px !important;">-</td>
+							<td style="max-height:8px;line-height:10px !important;">-</td>
+							<td style="max-height:8px;line-height:10px !important;">-</td>
+							<td name="reference" style="max-height:8px;line-height:10px !important;">-</td>
+						</tr>
+					</t>
+				</tbody>
+				<tfoot>
+					<tr class="row-no-bordered">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</template>
+
+	<template id="dte_detail" t-name="dte_detail">
+		<t t-set="quantity_total" t-value="0"/>
+		<t t-set="font_size_lines" t-value="'font-size:11px !important;'"/>
+		<t t-set="style_lines" t-value="'%s max-height:8px; line-height:8px !important;' % font_size_lines"/>
+		<t t-set="style_lines2" t-value="'%s max-height:8px;line-height:8px !important;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;' % font_size_lines"/>
+		<table class="table table-sm table-bordered-line" style="padding:10px;">
+			<thead>
+				<tr class="row-bordered" style="background-color:#9E9E9E;">
+					<th style="min-width:75px;max-width:75px;">Código</th>
+					<th style="width:40%;">Detalle</th>
+					<t t-if="show_atributes_on_reports== 'show_attributes'">
+						<th class="text-center" groups="product.group_product_variant">Color</th>
+						<th class="text-center" groups="product.group_product_variant">Tallas</th>
+					</t>
+					<th>Cantidad</th>
+					<th groups="uom.group_uom">Unid.</th>
+					<th style="min-width:60px;max-width:60px;" class="text-right">P. Unit.</th>
+					<th t-if="display_discount" class="text-left" groups="sale.group_discount_per_so_line">Desc. <t t-if="show_discount_on_report == 'percentaje'">(%)</t>
+					</th>
+					<th style="min-width:60px;max-width:60px;" class="text-right">Total</th>
+				</tr>
+			</thead>
+
+			<tbody class="invoice_tbody">
+				<tr t-foreach="o.invoice_line_ids" t-as="l" style="max-height:8px;line-height:10px !important;">
+					<t t-set="quantity_total" t-value="quantity_total+l['quantity']"/>
+
+					
+
+					<td t-att-style="style_lines">
+						<span t-esc="l.product_id.default_code"/>
+					</td>
+					<td t-att-style="style_lines2">
+						<span t-esc="l.product_id.name"/>
+					</td>
+					<t t-if="show_atributes_on_reports== 'show_attributes'">
+						<td t-att-style="style_lines" groups="product.group_product_variant">
+							<span t-esc="l.color"/>
+						</td>
+						<td t-att-style="style_lines" groups="product.group_product_variant">
+							<span t-raw="', '.join(l.attributes)"/>
+						</td>
+					</t>
+					<td t-att-style="style_lines" class="text-right">
+						<span t-esc="int(l.quantity)" />
+					</td>
+					<td t-att-style="style_lines" groups="uom.group_uom">
+						<span t-esc="l.uom_id"/>
+					</td>
+					<td t-att-style="style_lines" class="text-right">
+					  <t t-set="total_impuesto" t-value="sum([tax.amount for tax in l.invoice_line_tax_ids])/100" />
+					   
+					  <!-- <span t-esc="l.price_unit / (1 + total_impuesto)" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/> -->
+						<span t-esc="'$' + str(round(l.price_unit / (1 + total_impuesto),2))" />
+					</td>
+					<td t-if="display_discount" t-att-style="style_lines" class="text-right" groups="sale.group_discount_per_so_line">
+						<t t-if="show_discount_on_report == 'percentaje'">
+							<span t-esc="l.discount" t-options="{'widget': 'float', 'decimal_precision': 'Discount'}"/>
+						</t>
+						<t t-if="show_discount_on_report != 'percentaje'">
+							<span t-esc="l.discount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+						</t>
+					</td>
+					<td t-att-style="style_lines" class="text-right">
+						<span t-esc="round(l.price_unit / (1 + total_impuesto),2) * int(l.quantity) " t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+						
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr class="row-no-bordered">
+					<td/>
+					<t t-if="show_atributes_on_reports== 'show_attributes'">
+						<td groups="product.group_product_variant"/>
+						<td groups="product.group_product_variant"/>
+					</t>
+					<td class="text-right row-no-bordered"> <t t-if="o.company_id.print_total_qty_reports">Total:</t></td>
+					<td class="text-right row-no-bordered">
+						<span t-esc="quantity_total" t-if="o.company_id.print_total_qty_reports" t-options="{'widget': 'float', 'decimal_precision': 'Product Unit of Measure'}"/>
+					</td>
+					<td groups="uom.group_uom">
+					</td>
+					<td class="text-right row-no-bordered">
+					</td>
+					<td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+					</td>
+					<td class="text-right">
+					</td>
+				</tr>
+				<t t-if="'comment' in o and o.comment">
+					<tr class="row-no-bordered">
+						<td class="row-no-bordered" colspan="99">
+							<strong>Observación:</strong>
+							<span t-field="o.comment"/>
+						</td>
+					</tr>
+				</t>
+			</tfoot>
+		</table>
+	</template>
+
+	<template id="dte_sii_barcode" t-name="dte_sii_barcode">
+		<div class="col-12 text-center">
+			<img t-if="o.sii_barcode_img" t-att-src="'data:image/png;base64,%s' % to_text(o.sii_barcode_img)" />
+		</div>
+		<div class="col-12">
+			<p style="text-align:center;color:red; font-size:8px;">
+				Timbre Electrónico SII
+				<br />
+				Resolución
+				<t t-esc='o.company_id.dte_resolution_number' />
+				de
+				<t t-esc='o.company_id.dte_resolution_date.strftime("%Y")' />
+				Verifique documento: www.sii.cl
+			</p>
+		</div>
+	</template>
+	
+	<template id="dte_sii_cedible" t-name="dte_sii_cedible">
+		<div class="row">
+			<t t-set="style_cedible" t-value="'border: 1px solid black;height:20px;font-size:12px !important;'" />
+			<table class="table table-sm">
+				<tbody>
+					<tr>
+						<td colspan="2" t-att-style="style_cedible">
+							<strong>Nombre:</strong>	
+						</td>
+					</tr>
+					<tr>
+						<td t-att-style="style_cedible">
+							<strong>R.U.T.:</strong>
+						</td>
+						<td t-att-style="style_cedible">
+							<strong>FECHA:</strong>
+						</td>
+					</tr>
+					<tr>
+						<td t-att-style="style_cedible">
+							<strong>RECINTO:</strong>
+						</td>
+						<td t-att-style="style_cedible">
+							<strong>FIRMA:</strong>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" t-att-style="style_cedible">
+							<p style="font-size:8px">
+								"El acuse de recibo que se declara en este acto, de
+								acuerdo a lo
+								dispuesto en la letra b) del Artículo 4°, y la letra
+								c) del
+								Artículo 5° de la Ley 19.983, acredita que la entrega de
+								mercaderías o servicio(s) prestado(s) ha(n) sido recibido(s)"
+							</p>	
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="pull-right">
+			<h6> CEDIBLE</h6>
+		</div>
+	</template>
+	
+	<template t-name="l10n_cl_fe.dte_external_layout">
+    	<t t-call="web.basic_layout">
+			<!-- Multicompany -->
+			<t t-if="not o and doc">
+				<t t-set="o" t-value="doc" />
+			</t>
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id" />
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company" />
+			</t>
+			<t t-if="'journal_document_class_id' in o and o.journal_document_class_id">
+				<t t-set="document_class_id" t-value="o.journal_document_class_id.sii_document_class_id" />
+			</t>
+			<t t-set="partner_id" t-value="o.partner_id" />
+			<t t-set="commercial_partner_id" t-value="o.partner_id.commercial_partner_id" />
+			<t t-set="logo" t-value="company.logo" />
+			<t t-set="sii_document_number" t-value="o.sii_document_number" />
+			<t t-if="o.type in ['in_invoice', 'in_refund']">
+				<t t-set="partner_id" t-value="company.partner_id" />
+				<t t-set="commercial_partner_id" t-value="company.partner_id" />
+				<t t-set="company" t-value="o.partner_id" />
+				<t t-set="logo" t-value="o.partner_id.image" />
+				<t t-set="sii_document_number" t-value="o.reference" />
+				<t t-set="document_class_id" t-value="o.document_class_id" />
+			</t>
+			<t t-call="l10n_cl_fe.dte_header" />
+			<div class="page" style="padding-top:5px;">
+				<div class="row">
+					<div class="col-12"
+						style="text-align: right; margin-top:0px !important; padding-top:0px!important;">
+							<span t-field="company.state_id.name" />, <span t-field="o.date_invoice" t-options="{'format': 'd \'de\' LLLL \'de\' Y'}"/>
+					</div>
+				</div>
+				<t t-set="page_detail_height" t-value="560" />
+				<t t-call="l10n_cl_fe.dte_header_customer" />
+				<t t-set="style_detail" t-value="'min-height:%spx; max-height:%spx;' % (page_detail_height, page_detail_height)" />
+				<div t-att-style="style_detail" class="row">
+					<!-- Is there a discount on at least one line? -->
+					<t t-set="display_discount" t-value="any([l.discount or l.discount_value for l in o.invoice_line_ids])" />
+					<t t-call="l10n_cl_fe.dte_detail" />
+				</div>
+				<div class="row">
+					<div class="col-7">
+						<t t-call="l10n_cl_fe.dte_references" />
+					</div>
+					<div id="total" class="col-4 offset-1">
+						<table class="table table-sm">
+							<t t-if="o.global_descuentos_recargos">
+								<tr t-foreach="o.global_descuentos_recargos" t-as="gdr"
+									class="border-black" style="max-height:11px; font-size:12px !important;">
+									<td>
+										<strong>Descuento o Recargo Global</strong>
+									</td>
+									<td class="text-right">
+										<span
+											t-esc="gdr.valor if gdr.gdr_type=='amount' else gdr.amount_untaxed_global_dr"
+											t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+									</td>
+								</tr>
+							</t>
+							<t t-set="document_class_origin_id" t-value="document_class_id" />
+							<t t-if="o.refund_invoice_id and o.refund_invoice_id.document_class_id">
+								<t t-set="document_class_origin_id" t-value="o.refund_invoice_id.document_class_id" />
+							</t>
+							<tr style="max-height:11px; font-size:12px !important;" name="subtotal" t-if="document_class_origin_id and document_class_origin_id.sii_code not in (34, 39)">
+								<td>
+									<strong>Monto Neto</strong>
+								</td>
+								<td class="text-right">
+									<span t-field="o.amount_untaxed"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+							<!-- <tr style="max-height:11px; font-size:12px !important;" name="exento" t-if="o.exento() != 0">
+								<td>
+									<strong>Exento</strong>
+								</td>
+								<td class="text-right">
+									<span t-esc="o.exento()"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr> -->
+							<tr name="discount" t-if="display_discount" class="border-black"
+								style="max-height:11px; font-size:12px !important;">
+								<td>
+									<strong>Descuento</strong>
+								</td>
+								<td class="text-right">
+									<span t-esc="o.getTotalDiscount()"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+							<t t-set="total_impuesto_19" t-value="0.0" />
+							<t t-set="total_impuesto_20_5" t-value="0.0" />
+							<t t-set="total_impuesto" t-value="0.0" />
+							<t t-foreach="o.invoice_line_ids" t-as="l">
+								<t t-set="total_impuesto" t-value="sum([tax.amount for tax in l.invoice_line_tax_ids])/100" />
+								<t t-foreach="l.invoice_line_tax_ids" t-as="i">
+									<t t-set="total_impuesto_19" t-value="(total_impuesto_19 +(round(l.price_unit / (1 + total_impuesto),2)*0.19)) * l.quantity if i.amount == 19.00 else total_impuesto_19 + 0 " />
+									<t t-set="total_impuesto_20_5" t-value="(total_impuesto_20_5 +(round(l.price_unit / (1 + total_impuesto),2)*0.205))* l.quantity  if i.amount == 20.5 else total_impuesto_20_5 + 0 " />
+								</t>
+							</t>
+							<tr t-foreach="o.tax_line_ids" t-as="t"
+								style="max-height:11px; font-size:12px !important;" t-if="document_class_origin_id and document_class_origin_id.sii_code not in (34, 39)">
+								<td>
+									<span t-field="t.tax_id.description" />
+								</td>
+								<td class="text-right">
+									<t t-if="t.tax_id.description == 'IVA 19% Venta'">
+										<span t-esc="t.amount_total"
+										t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+									</t>
+									<t t-if="t.tax_id.description == 'ILA Cervezas 20.5%'">
+										<span t-esc="t.amount_total"
+										t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+									</t>
+									<t t-if="t.tax_id.description == '	ILA Licores 31.5%'">
+										<span t-esc="t.amount_total"
+										t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+									</t>
+									<!-- <span t-esc="t.amount if t.amount > 0 else t.base"
+										t-options='{"widget": "monetary", "display_currency": o.currency_id}' /> -->
+								</td>
+							</tr>
+							<tr class="border-black" style="max-height:12px; font-size:12px !important;">
+								<td>
+									<strong>Total</strong>
+								</td>
+								<td class="text-right">
+									<span t-field="o.amount_total"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-5">
+						<t t-call="l10n_cl_fe.dte_sii_barcode" />
+					</div>
+					<div class="col-6 offset-1">
+						<t t-if="cedible">
+							<t t-call="l10n_cl_fe.dte_sii_cedible" />
+						</t>
+					</div>
+				</div>
+			</div>
+		</t>
+	</template>
+
+	<!-- reemplazar reporte de factura para hacerlo extensible y poder reutilizar 
+		el reporte -->
+
+	<template id="account.report_invoice">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-set="lang" t-value="o.user_id.lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
+				<t t-call="l10n_cl_fe.report_invoice_document_extension" t-lang="lang" />
+			</t>
+		</t>
+	</template>
+
+	<template id="account.report_invoice_with_payments">
+		<t t-call="web.html_container">
+			<t t-set="document_with_payments" t-value="True" />
+			<t t-foreach="docs" t-as="o">
+				<t t-set="lang" t-value="o.user_id.lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
+				<t t-call="l10n_cl_fe.report_invoice_document_with_payments_extension" t-lang="lang" />
+			</t>
+		</t>
+	</template>
+
+	<template id="report_invoice_document_with_payments_extension">
+		<t t-set="call_super" t-value="True" />
+		<t t-if="call_super">
+			<t t-if="(o.document_class_id.sii_code not in [29, 30, 32, 33, 34, 40, 43, 45, 46, 55, 56, 60, 61, 110, 111, 112] or o.ticket) and not data.get('report_type')=='html'">
+				<t t-set="iter_data" t-value="[1]" />
+				<t t-if="o.document_class_id.sii_code == 33 and cedible">
+					<t t-set="iter_data" t-value="[2, 1]" />
+				</t>
+				<t t-foreach="iter_data" t-as="i_data">
+					<t t-call="l10n_cl_fe.report_boleta_ticket_body" />
+				</t>
+			</t>
+			<t t-else="">
+				<t t-call="l10n_cl_fe.dte_external_layout" />
+			</t>
+		</t>
+	</template>
+
+	<template id="report_invoice_document_extension">
+		<t t-set="call_super" t-value="True" />
+		<t t-if="call_super">
+			<t t-if="(o.document_class_id.sii_code not in [29, 30, 32, 33, 34, 40, 43, 45, 46, 55, 56, 60, 61, 110, 111, 112] or o.ticket) and not data.get('report_type')=='html'">
+				<t t-set="iter_data" t-value="[1]" />
+				<t t-if="o.document_class_id.sii_code == 33 and cedible">
+					<t t-set="iter_data" t-value="[2, 1]" />
+				</t>
+				<t t-foreach="iter_data" t-as="i_data">
+					<t t-call="l10n_cl_fe.report_boleta_ticket_body" />
+				</t>
+			</t>
+			<t t-else="">
+				<t t-call="l10n_cl_fe.dte_external_layout" />
+			</t>
+		</t>
+	</template>
+	
+	<template id="invoice_cedible">
+		<t t-call="account.report_invoice">
+			<t t-set="cedible" t-value="True" />
+		</t>
+	</template>
+	
+	<report
+		string="Print Cedible"
+		id="action_print_cedible"
+		model="account.invoice"
+		report_type="qweb-pdf"
+		name="l10n_cl_fe.invoice_cedible"
+		file="l10n_cl_fe.report_invoice_cedible"
+		print_report_name="('CED %s' % object._get_report_base_filename())"
+		attachment_use="True"
+		attachment="(object.state in ('open','paid')) and ('CED_'+(object.number or '').replace('/','')+'.pdf')"
+	/>
+
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+	<record id="base.main_company" model="res.company">
+		<field name="size_calzado_id" model="product.attribute" search="[('name','=','SIZE')]" />
+		<field name="size_vestuario_id" model="product.attribute"
+			search="[('name','=','SIZE')]" />
+		<field name="color_id" model="product.attribute" search="[('name','=','COLOR')]" />
+	</record>
+</odoo>

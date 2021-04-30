@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<record id="pos_order_reason_nc_tree_view" model="ir.ui.view">
+		<field name="name">pos.order.reason.nc.tree</field>
+		<field name="model">pos.order.reason.nc</field>
+		<field name="arch" type="xml">
+			<tree editable="bottom">
+				<field name="name" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="pos_order_reason_nc_form_view" model="ir.ui.view">
+		<field name="name">pos.order.reason.nc.form</field>
+		<field name="model">pos.order.reason.nc</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<group>
+							<field name="name" />
+						</group>
+						<group>
+
+						</group>
+					</group>
+				</sheet>
+				<footer>
+
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="pos_order_reason_nc_search_view" model="ir.ui.view">
+		<field name="name">pos.order.reason.nc.search</field>
+		<field name="model">pos.order.reason.nc</field>
+		<field name="arch" type="xml">
+			<search>
+				<field name="name" />
+			</search>
+		</field>
+	</record>
+
+	<record id="pos_order_reason_nc_action" model="ir.actions.act_window">
+		<field name="name">Motivos de Nota de Credito</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">pos.order.reason.nc</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_id" ref="pos_order_reason_nc_tree_view" />
+		<field name="search_view_id" ref="pos_order_reason_nc_search_view" />
+	</record>
+
+	<menuitem id="pos_order_reason_nc_menu" name="Motivos de Nota de Credito"
+		sequence="50" parent="menu_sii_config" action="pos_order_reason_nc_action" />
+
+</odoo>

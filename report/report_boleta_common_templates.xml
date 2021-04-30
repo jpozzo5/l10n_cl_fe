@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- plantilla para la cabecera de los documentos -->
+	<template id="report_boleta_header_layout">
+		<div id="header" style="background: white; font-size: 11px;line-height:11px;">
+			<div class="col-12 text-center">
+				<div t-if="o.company_id.logo">
+					<img t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
+							style="width: 80%" t-att-widget="'image'" />
+				</div>
+				<h6>
+					<span t-esc="o.company_id.partner_id.name" />
+				</h6>
+				<h6>
+					R.U.T.:
+					<span t-esc="o.company_id.partner_id.document_number" />
+				</h6>
+			</div>
+			<div class="row col-12">
+				<strong>Casa Matriz: </strong>
+				<span t-esc="o.company_id.partner_id.street" />
+				<span t-esc="o.company_id.partner_id.city" />
+			</div>
+			<div class="row col-12">
+				<strong>Giro: </strong>
+				<span t-esc="o.company_id.activity_description.name" />
+			</div>
+			<t t-if="'warehouse_id' in o">
+				<div class="row col-12" t-if="o.warehouse_id.partner_id.street or o.warehouse_id.partner_id.city_id.name">
+					<strong>Sucursal: </strong>
+					<span t-esc="o.warehouse_id.partner_id.street or ''" />
+					.
+					<span t-esc="o.warehouse_id.partner_id.city_id.name or ''" />
+				</div>
+			</t>
+			<div class="row col-12">
+				<strong>Fecha:</strong>
+				<span t-field="o.date_invoice" />
+			</div>
+			<div class="row col-12" t-if="o.document_class_id">
+				<strong t-field="o.document_class_id.name" />
+				N°:
+				<span t-field="o.sii_document_number" />
+			</div>
+		</div>
+	</template>
+
+	<template id="report_credit_note_header_layout">
+		<div id="header">
+			<div
+				style="text-align:center; border: 2px solid;padding:5px;">
+				<h5>
+					R.U.T.:
+					<t t-esc="o.company_id.partner_id.document_number" />
+				</h5>
+				<h5 class="pos-center-align">
+					<t t-esc="o.document_class_id.name" />
+					<br />
+					N°:
+					<t t-esc="o.sii_document_number" />
+				</h5>
+			</div>
+			<div
+				style="text-align: center; margin-top:0px !important; padding-top:0px!important;">
+				<h7
+					style="text-align:center;font-size:11px;text-transform:uppercase;">
+					SII -
+					<span t-field="o.company_id.sii_regional_office_id.name" />
+				</h7>
+			</div>
+			<div t-if="o.company_id.logo">
+				<img t-att-src="'data:image/png;base64,%s' % to_text(o.company_id.logo)"
+						style="width: 80%" t-att-widget="'image'" />
+			</div>
+		</div>
+	</template>
+
+	<!-- plantilla para la informacion del cliente -->
+	<template id="report_boleta_partner_layout">
+		<div id="info" style="padding-top:10px;font-size: 11px;line-height:11px;">
+			<div t-if="o.document_class_id.sii_code in [29, 30, 32, 33, 34, 40, 43, 45, 46, 55, 56, 60, 61]">
+				<div class="row col-12">
+					<strong t-esc="o.company_id.name" />
+				</div>
+				<div class="row col-12">
+					<strong>Casa Matriz: </strong>
+					<span t-esc="o.company_id.partner_id.street" />
+					<span t-esc="o.company_id.partner_id.city" />
+				</div>
+				<div class="row col-12">
+					<strong>Giro: </strong>
+					<span t-esc="o.company_id.activity_description.name" />
+				</div>
+				<t t-if="'warehouse_id' in o">
+					<div class="row col-12" t-if="o.warehouse_id.partner_id.street or o.warehouse_id.partner_id.city_id.name">
+						<strong>Sucursal: </strong>
+						<span t-esc="o.warehouse_id.partner_id.street or ''" />
+						.
+						<span t-esc="o.warehouse_id.partner_id.city_id.name or ''" />
+					</div>
+				</t>
+				<br />
+			</div>
+			<t t-if="o.partner_id">
+				<div class="row col-12">
+					<strong>Cliente: </strong>
+					<strong t-field="o.partner_id.name" />
+				</div>
+				<div class="row col-12">
+					<strong>R.U.T.: </strong>
+					<span t-field="o.partner_id.document_number" />
+				</div>
+				<t t-if="o.document_class_id.sii_code in [29, 30, 32, 33, 34, 40, 43, 45, 46, 55, 56, 60, 61]">
+					<div class="row col-12">
+						<strong>Giro: </strong>
+						<span t-field="o.partner_id.activity_description" />
+					</div>
+					<div class="row col-12">
+						<strong>Dirección: </strong>
+						<span t-field="o.partner_id.street" />
+					</div>
+					<div class="row col-12">
+						<strong>Comuna: </strong>
+						<span t-field="o.partner_id.city_id" />
+					</div>
+				</t>
+			</t>
+			<div class="row col-12" t-if="'payment_term_id' in o and o.payment_term_id">
+				<strong>Condicion de pago: </strong>
+				<span t-field="o.payment_term_id.name" />
+			</div>
+			<t t-if="'invoice_line_ids' in o">
+				<t t-set="carrier_id" t-value="o.invoice_line_ids.mapped('sale_line_ids').mapped('order_id').mapped('carrier_id')" />
+				<t t-if="carrier_id">
+					<div class="row col-12" t-if="'forma_pago' in o and o.forma_pago">
+						<strong>Forma de entrega: </strong>
+						<span t-field="carrier_id[0].name" />
+					</div>
+				</t>
+			</t>
+			<t t-if="o.document_class_id.sii_code in [29, 30, 32, 33, 34, 40, 43, 45, 46, 55, 56, 60, 61]">
+				<div class="row col-12">
+					<strong>Fecha de emision:</strong>
+					<span t-field="o.date_invoice" />
+				</div>
+			</t>
+		</div>
+	</template>
+
+	<!-- plantilla para las referencias -->
+	<template id="report_referencias_layout">
+		<div t-if="o.referencias">
+			<br />
+			<strong>Documentos de Referencia</strong>
+			<table class="table table-sm table-no-border" style="line-height: 11px; font-size: 11px;">
+				<colgroup>
+					<col width='30%' />
+					<col width='70%' />
+				</colgroup>
+				<t t-foreach="o.referencias" t-as="ref">
+					<tr>
+						<td colspan="2">
+							<strong>Tipo Documento</strong>
+							<span t-field="ref.sii_referencia_TpoDocRef.name" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong>Folio: </strong>
+							<span t-field="ref.origen" />
+						</td>
+						<td>
+							<strong>Fecha Documento: </strong>
+							<span t-field="ref.fecha_documento" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<strong>Razón: </strong>
+							<span t-field="ref.motivo" />
+						</td>
+					</tr>
+				</t>
+			</table>
+		</div>
+	</template>
+
+	<!-- plantilla para el detalle de las lineas -->
+	<template id="report_boleta_detail_layout">
+		<t t-set="row_border_style" t-value='"border-top: 1px solid black !important;border-bottom: 1px solid black !important;"' />
+		<t t-set="row_no_border_style" t-value='"border-top: 1px solid black !important;border-bottom: 1px solid black !important;"' />
+		<t t-set="row_border_top_style" t-value='"border-top: 1px solid black !important;"' />
+		<t t-set="show_discount_on_report" t-value="o.env['ir.config_parameter'].sudo().get_param('show_discount_on_report', default='percentaje')" />
+		<table class="table table-sm table-no-border" id="lines" style="line-height: 11px;">
+			<colgroup>
+				<col width='70%' />
+				<col width='30%' />
+			</colgroup>
+			<thead>
+				<tr>
+					<th class="text-left" t-att-style="row_border_style">CANT./ P. UNIT./ ARTICULO</th>
+					<th class="text-right" t-att-style="row_border_style">VALOR</th>
+				</tr>
+			</thead>
+			<tbody>
+				<t t-foreach="o.invoice_line_ids" t-as="line" style="font-size: 11px;line-height:11px;">
+					<tr t-att-style="row_border_top_style">
+						<td class="text-left">
+							<t t-if="o.state != 'cancel'">
+								<span t-esc="abs(line.quantity)" 
+									t-options='{"widget": "float", "decimal_precision": "Product Unit of Measure"}' />
+								<span
+									t-if="line.product_id.uom_id != env.ref('uom.product_uom_unit')"
+									t-field="line.product_id.uom_id" groups="uom.group_uom" />
+								x
+								<span t-esc="abs(line.price_unit)"
+									t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+								<t t-if="show_discount_on_report == 'percentaje'">
+									<t t-if="line.discount != 0.0">
+										<span style="color: #808080;" t-field="line.discount" />
+										<span style="color: #808080;">% Desc</span>
+									</t>
+								</t>
+								<t t-if="show_discount_on_report != 'percentaje'">
+									<t t-if="line.discount_value != 0.0">
+										<span style="color: #808080;" t-field="line.discount_value" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+										<span style="color: #808080;">Desc</span>
+									</t>
+								</t>
+							</t>
+						</td>
+						<td class="text-right">
+							<t t-if="o.state != 'cancel'">
+								<span t-esc="abs(line.price_total)"
+									t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+							</t>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<span t-field="line.product_id" />
+						</td>
+					</tr>
+				</t>
+			</tbody>
+		</table>
+	</template>
+
+	<!-- plantilla para el subtotal -->
+	<template id="report_subtotal_layout">
+		<div id="subtotal">
+			<table class="table table-sm table-no-border" style="line-height: 11px;">
+				<tr style="border-bottom: 1px solid black !important;">
+					<td></td>
+					<td></td>
+				</tr>
+				<tr t-if="o.getTotalDiscount() !=0">
+					<td>
+						<strong>Descuento:</strong>
+					</td>
+					<td class="text-right">
+						<t t-esc="abs(o.getTotalDiscount())"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr>
+				<tr t-if="(o.amount_total-o.amount_tax-o.exento()) !=0">
+					<td>
+						<strong>Neto:</strong>
+					</td>
+					<td class="text-right">
+						<t t-esc="abs(o.amount_total-o.amount_tax-o.exento())"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr>
+				<tr t-if="(o.exento()) !=0">
+					<td>
+						<strong>Exento:</strong>
+					</td>
+					<td class="text-right">
+						<t t-esc="abs(o.exento())"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr>
+				<tr t-if="o.amount_tax !=0">
+					<td>
+						<strong>IVA:</strong>
+					</td>
+					<td class="text-right">
+						<t t-esc="abs(o.amount_tax)"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr>
+				<tr style="font-size: 14px;">
+					<td>
+						<strong>Total</strong>
+					</td>
+					<td class="text-right">
+						<strong t-esc="abs(o.amount_total)"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</template>
+
+	<template id="report_boleta_subtotal_layout">
+		<div id="subtotal">
+			<table class="table table-sm table-no-border" style="line-height: 11px;">
+				<tr style="border-bottom: 1px solid black !important;">
+					<td></td>
+					<td></td>
+				</tr>
+				<tr t-if="o.getTotalDiscount() !=0">
+					<td>
+						<strong>Descuento:</strong>
+					</td>
+					<td class="text-right">
+						<t t-esc="abs(o.getTotalDiscount())"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr>
+				<!-- <tr t-if="(o.exento()) !=0">
+					<td>
+						<strong>Exento:</strong>
+					</td>
+					<td class="text-right">
+						<t t-esc="abs(o.exento())"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr> -->
+				<tr style="font-size: 14px;">
+					<td>
+						<strong>Total</strong>
+					</td>
+					<td class="text-right">
+						<strong t-esc="abs(o.amount_total)"
+							t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}' />
+					</td>
+				</tr>
+			</table>			
+		</div>
+	</template>
+
+	<!-- plantilla para las formas de pago -->
+	<template id="report_boleta_payment_layout">
+		<t t-set="change" t-value="0" />
+		<t t-set="payments_vals" t-value="o._get_payments_vals()"/>
+		<table class="table table-sm table-no-border" id="payments" style="line-height: 11px;" t-if="payments_vals">
+			<thead>
+				<tr style="border-bottom: 1px solid black !important;">
+					<th>Fecha de Pago</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<t t-foreach="payments_vals" t-as="payment_vals">
+					<tr>
+						<td>
+                            <i class="oe_form_field text-right oe_payment_label"><t t-esc="payment_vals['date']"/></i>
+                        </td>
+                        <td class="text-right">
+                            <span t-esc="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </td>
+					</tr>
+				</t>
+			</tbody>
+		</table>
+		<span>Vendedor:</span>
+		<t t-esc="o.user_id.name" />
+	</template>
+	
+	<template id="report_boleta_notes_layout">
+		<div t-if="o.comment" id="notes" class="row">
+			<div class="col-12" style="text-align:left;font-size:11px;">
+				<strong>Observaciones:</strong>
+				<span t-field='o.comment' />
+			</div>
+		</div>
+	</template>
+
+	<!-- plantilla para el barcode del sii -->
+	<template id="report_boleta_sii_barcode_layout">
+		<div t-if="o.sii_barcode_img" id="barcode">
+			<div class="col-12">
+				<span>
+					<img t-att-src="'data:image/png;base64,%s' % to_text(o.sii_barcode_img)"
+						style="width: 100%" t-att-widget="'image'" />
+				</span>
+			</div>
+			<div class="col-12">
+				<p style="text-align:center; font-size:11px;">
+					Timbre Electrónico SII
+					<br />
+					Resolución SII Nº
+					<t t-esc='o.company_id.dte_resolution_number' />
+					del
+					<t t-esc='o.company_id.dte_resolution_date.strftime("%Y")' />
+					<br />
+					Verifique documento:
+					<t t-if="o.document_class_id.sii_code not in [29, 30, 32, 33, 34, 40, 43, 45, 46, 55, 56, 60, 61]">
+						<t t-esc="(o.company_id.website_portal_boletas or o.company_id.website) + '/boleta'" />
+					</t>
+					<t t-if="o.document_class_id.sii_code in [29, 30, 32, 33, 34, 40, 43, 45, 46, 55, 56, 60, 61]">
+						<t t-esc="'www.sii.cl'" />
+					</t>
+				</p>
+			</div>
+		</div>
+	</template>
+	
+	<template id="report_ticket_cedible_layout">
+		<t t-if="cedible and i_data==2">
+			<div class="row">
+				<br />
+				<div style="border: 1px solid black; padding: 3px;">
+					<table class='receipt-orderlines' style="font-size: 10px; line-height: 20px;">
+						<colgroup>
+							<col width='15%' />
+							<col width='35%' />
+							<col width='15%' />
+							<col width='35%' />
+						</colgroup>
+						<tr>
+							<td>
+								<strong>Nombre: </strong>
+							</td>
+							<td colspan="3">
+								________________________________________________
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>R.U.T.: </strong>
+							</td>
+							<td>___________________</td>
+							<td>
+								<strong>Firma: </strong>
+							</td>
+							<td>___________________</td>
+						</tr>
+						<tr>
+							<td>
+								<strong>Fecha: </strong>
+							</td>
+							<td>___________________</td>
+							<td>
+								<strong>Recinto: </strong>
+							</td>
+							<td>___________________</td>
+						</tr>
+						<tr>
+							<td colspan="4">
+								<div style="border-top: 1px solid black; line-height: 10px;">
+									<p style="font-size:8px">
+										El acuse de recibo que se declara en este acto, de
+										acuerdo a lo
+										dispuesto en la letra b) del Artículo 4°, y la letra
+										c) del Artículo 5° de la Ley 19.983, acredita que la entrega de
+										mercaderías o servicio(s) prestado(s) ha(n) sido recibido(s)
+									</p>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="pull-right">
+				<h6> CEDIBLE</h6>
+			</div>
+			<br />
+		</t>
+	</template>
+</odoo>

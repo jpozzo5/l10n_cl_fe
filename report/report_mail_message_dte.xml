@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="xml_dte_header" t-name="xml_dte_header">
+		<div class="header">
+			<div class="row">
+				<table class="table table-sm" style="margin-bottom:0px !important;">
+					<tbody>
+						<tr>
+							<td>
+								<img t-if="company_vals.get('logo')" t-att-src="'data:image/png;base64,%s' % to_text(company_vals.get('logo'))"
+									style="max-height: 145px; width: 128px;" />
+							</td>
+							<td>
+								<h4 style="text-transform:uppercase;font-weight:900;">
+									<span t-esc="company_vals.get('name')" />
+								</h4>
+								<t t-if="company_vals.get('activity_description')">
+									<span t-esc="company_vals.get('activity_description')" />
+									<br />
+								</t>
+								<!-- domicilios -->
+								<strong>Casa Matriz: </strong>
+								<span t-esc="company_vals.get('street')" />
+								<br />
+								<strong>Fono: </strong>
+								<span t-esc="company_vals.get('phone')" />
+								<br />
+							</td>
+							<td>
+								<div class="float-right">
+									<div
+										style="border: 3px solid red; text-align: center;font-size: 18px;padding: 4px !important; height:3.8cm; width:7.5cm;">
+										<h6
+											style="color:red;font-size:18px;padding-bottom:5px; padding-top:5px; font-family:Arial;">
+											R.U.T.:
+											<span t-esc="company_vals.get('document_number')" />
+										</h6>
+										<h6 name="document_class_id" t-if="o.document_class_id"
+											style="line-height:20px;font-size:18px;color:red;text-align:center;text-transform:uppercase;padding-bottom:5px;font-family:Arial;">
+											<span t-field="o.document_class_id" />
+										</h6>
+										<h6 t-if="o.number"
+											style="color: red;text-align: center;font-size:18px;padding-bottom:5px;font-family:Arial;">
+											N°
+											<span t-field="o.number" />
+										</h6>
+										<br />
+									</div>
+									<div
+										style="text-align: center; margin-top:0px !important; padding-top:0px!important;">
+										<h7
+											style="color:red;text-align:center;font-size:11px;text-transform:uppercase;">
+											SII -
+											<span t-field="o.company_id.sii_regional_office_id.name" />
+										</h7>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</template>
+	
+	<template id="xml_dte_header_customer" t-name="xml_dte_header_customer">
+		<div class="row mb8 div-bordered">
+			<table class="table cl_invoice" style="margin-bottom:0px !important;">
+				<tbody>
+					<tr style="max-height:15px; font-size:12px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Señor (es):</strong>
+						</td>
+						<td
+							style="border-top:0px !important;padding:0px !important;width: 60%;">
+							<span t-field="commercial_partner_id.display_name" />
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>RUT:</strong>
+						</td>
+						<td
+							style="border-top:0px !important;padding:0px !important;width: 15%;">
+							<span t-field="commercial_partner_id.document_number" />
+						</td>
+					</tr>
+					<tr style="max-height:15px; font-size:12px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Direccion:</strong>
+						</td>
+						<td
+							style="border-top:0px !important;padding:0px !important;">
+							<span t-field="partner_id.street" />
+							<span t-field="partner_id.street2" />
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Comuna:</strong>
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<span t-field="partner_id.city_id.name" />
+						</td>
+					</tr>
+					<tr style="max-height:15px; font-size:12px !important;">
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Giro:</strong>
+						</td>
+						<td
+							style="border-top:0px !important;padding:0px !important;">
+							<span t-field="commercial_partner_id.activity_description.name" />
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<strong>Telefono:</strong>
+						</td>
+						<td style="border-top:0px !important;padding:0px !important;">
+							<span t-field="partner_id.phone" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</template>
+
+	<template id="xml_dte_detail" t-name="xml_dte_detail">
+		<t t-set="quantity_total" t-value="0" />
+		<table class="table table-sm table-bordered-line" 
+			style="padding:10px;">
+			<thead>
+				<tr class="row-bordered" style="background-color: #FFFF99;">
+					<th style="min-width:75px;max-width:75px;">Código</th>
+					<th style="width:40%;">Detalle</th>
+					<th>Cantidad</th>
+					<th style="min-width:60px;max-width:60px;" class="text-right">P. Unit.</th>
+					<th t-if="discount_total" class="text-left"
+						groups="sale.group_discount_per_so_line">Desc.
+					</th>
+					<th style="min-width:60px;max-width:60px;" class="text-right">Total</th>
+				</tr>
+			</thead>
+			<tbody class="invoice_tbody">
+				<tr t-foreach="lines" t-as="l" style="font-size:10px;max-height:8px;line-height:10px !important;">
+					<t t-set="quantity_total" t-value="quantity_total+l['quantity']" />
+					<td style="max-height:8px;line-height:10px !important;">
+						<span t-esc="l['default_code']" />
+					</td>
+					<td style="max-height:8px;line-height:10px !important;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+						<span t-esc="l['name']" />
+					</td>
+					<td style="max-height:8px;line-height:10px !important;" class="text-right">
+						<span t-esc="l['quantity']"
+							t-options="{'widget': 'float', 'decimal_precision': 'Product Unit of Measure'}"/>
+					</td>
+					<td style="max-height:8px;line-height:10px !important;" class="text-right">
+						<span t-esc="l['price_unit']"
+							t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+					</td>
+					<td t-if="discount_total" style="max-height:8px;line-height:10px !important;" class="text-right"
+						groups="sale.group_discount_per_so_line">
+						<span t-esc="l['discount']"  t-options="{'widget': 'float', 'decimal_precision': 'Discount'}"/>
+					</td>
+					<td style="max-height:8px;line-height:10px !important;" class="text-right">
+						<span t-esc="l['price_subtotal']"
+							t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr class="row-no-bordered">
+					<td></td>
+					<td class="text-right row-no-bordered"> <t t-if="o.company_id.print_total_qty_reports">Total:</t></td>
+					<td class="text-right row-no-bordered">
+						<span t-esc="quantity_total" t-if="o.company_id.print_total_qty_reports"
+							t-options="{'widget': 'float', 'decimal_precision': 'Product Unit of Measure'}"/>
+					</td>
+					<td class="text-right row-no-bordered">
+					</td>
+					<td></td>
+					<td class="text-right">
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</template>
+	
+	<template id="report_mail_dte_message_document">
+		<t t-call="web.basic_layout">
+			<!-- Multicompany -->
+			<t t-if="not o and doc">
+				<t t-set="o" t-value="doc" />
+			</t>
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id" />
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company" />
+			</t>
+			<t t-set="partner_id" t-value="company.partner_id" />
+			<t t-set="commercial_partner_id" t-value="company.partner_id" />
+			<t t-set="xml_dte" t-value="o._get_xml()" />
+			<t t-set="company_vals" t-value="o._get_company_values(xml_dte)" />
+			<t t-set="total_vals" t-value="o._get_total_values(xml_dte)" />
+			<t t-call="l10n_cl_fe.xml_dte_header" />
+			<div class="page" style="padding-top:10px;">
+				<div class="row">
+					<div class="col-12"
+						style="text-align: right; margin-top:0px !important; padding-top:0px!important;">
+							<span t-field="company.state_id.name" />, <span t-field="o.date" t-options="{'format': 'd \'de\' LLLL \'de\' Y'}"/>
+					</div>
+				</div>
+				<t t-call="l10n_cl_fe.xml_dte_header_customer" />
+				<t t-set="lines" t-value="o._get_detail(xml_dte)" />
+				<t t-set="discount_total" t-value="sum([l['discount'] for l in lines])" />
+				<t t-set="style_detail" t-value="'min-height:620px; max-height:620px;'" />
+				<div t-att-style="style_detail" class="row">
+					<t t-call="l10n_cl_fe.xml_dte_detail" />
+				</div>
+				<div class="row">
+					<div class="col-5">
+					</div>
+					<div id="total" class="col-4 offset-3">
+						<table class="table table-sm">
+							<t t-if="total_vals.get('global_descuentos_recargos', [])">
+								<tr t-foreach="total_vals.get('global_descuentos_recargos', [])" t-as="gdr"
+									class="border-black" style="max-height:11px; font-size:12px !important;">
+									<td>
+										<strong>Descuento o Recargo Global</strong>
+									</td>
+									<td class="text-right">
+										<span
+											t-esc="float(gdr['valor'] or 0)"
+											t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+									</td>
+								</tr>
+							</t>
+							<tr name="discount" t-if="discount_total" class="border-black"
+								style="max-height:11px; font-size:12px !important;">
+								<td>
+									<strong>Descuento</strong>
+								</td>
+								<td class="text-right">
+									<span t-esc="discount_total"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+							<tr style="max-height:11px; font-size:12px !important;" name="subtotal" t-if="o.document_class_id.sii_code not in (34, 39)">
+								<td>
+									<strong>Monto Neto</strong>
+								</td>
+								<td class="text-right">
+									<span t-esc="total_vals.get('amount_untaxed')"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+							<tr style="max-height:11px; font-size:12px !important;" name="exento" t-if="total_vals.get('exento') != 0">
+								<td>
+									<strong>Exento</strong>
+								</td>
+								<td class="text-right">
+									<span t-esc="total_vals.get('exento')"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+							<tr style="max-height:11px; font-size:12px !important;" name="amount_tax" t-if="total_vals.get('amount_tax') != 0">
+								<td>
+									<strong>IVA</strong>
+								</td>
+								<td class="text-right">
+									<span t-esc="total_vals.get('amount_tax')"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+							<tr class="border-black" style="max-height:12px; font-size:12px !important;">
+								<td>
+									<strong>Total</strong>
+								</td>
+								<td class="text-right">
+									<span t-esc="total_vals.get('amount_total')"
+										t-options="{'widget': 'monetary', 'display_currency': o.currency_id}" />
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</t>
+	</template>
+
+	<template id="report_mail_dte_message">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="l10n_cl_fe.report_mail_dte_message_document" />
+			</t>
+		</t>
+	</template>
+
+	<report string="XML Electronico"
+		id="action_report_mail_dte_message" model="mail.message.dte.document"
+		report_type="qweb-pdf" name="l10n_cl_fe.report_mail_dte_message"
+		file="l10n_cl_fe.report_mail_dte_message"
+		print_report_name="object._get_report_base_filename()"
+		paperformat="l10n_cl_fe.paperformat_sii_document_electronic_a4" />
+
+</odoo>

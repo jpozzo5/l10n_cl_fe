@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <report
+      id="libro_xlsx"
+      model="account.move.book"
+      string="Libro xls"
+      report_type="xlsx"
+      name="account.move.book.xlsx"
+      file="account.move.book.xlsx"
+      attachment_use="True"
+      attachment="(object.state in ('Enviado','Proceso')) and ((object.name or '').replace('/','')+'.xlsx')"
+  />
+  <report
+      id="libro_h_xlsx"
+      model="account.move.book.honorarios"
+      string="Libro Honorarios"
+      report_type="xlsx"
+      name="account.move.book.honorarios.xlsx"
+      file="account.move.book.honorarios.xlsx"
+      attachment_use="True"
+      attachment="(object.state in ('Enviado','Proceso')) and ((object.name or '').replace('/','')+'.xlsx')"
+  />
+
+  <report string="Libro CV PDF"
+          id="action_print_libro"
+          model="account.move.book"
+          report_type="qweb-pdf"
+          name="l10n_cl_fe.libro_cv"
+          file="l10n_cl_fe.libro_cv"
+          attachment_use="False"
+          paperformat="odoo_utils.paperformat_a4_landscape" 
+    />
+          <template t-name="l10n_cl_fe.layout_libro">
+  		     <t t-call="web.external_layout">
+                <div class="page">
+                	<h3>Libro de <span t-field="o.tipo_operacion"/></h3>
+  	                 <table class="table table-sm" t-if="o.tipo_operacion != 'BOLETA'">
+  	                     <thead >
+  	                         <tr class="text-center" style="max-height:8px; line-height:12px; font-size:12px !important; padding:0px;">
+  	                            <th>#</th>
+  	                            <th>DTE</th>
+  	                            <th>Número</th>
+  	                            <th>Fecha Emisión</th>
+  	                            <th style="min-width: 128px;">RUT</th>
+                                <th style="min-width: 280px;">Entidad</th>
+  	                            <th>Afecto</th>
+  	                            <th>Exento</th>
+  	                            <th>IVA</th>
+  	                            <th>Total</th>
+  	                         </tr>
+  	                     </thead>
+  	                     <tbody>
+  	                     	<t t-set="linea_count" t-value="0"/>
+                              <t t-foreach="o.move_ids" t-as="m">
+                              	<t t-set="linea_count" t-value="linea_count+1"/>
+                                <t t-set="totales" t-value="m.totales_por_movimiento()"/>
+                                <tr>
+                                    <td><span t-esc="linea_count"/></td>
+                                    <td><span t-field="m.document_class_id.sii_code"/></td>
+                                    <td><span t-esc="m.sii_document_number or m.ref"/></td>
+                                    <td class="text-left">
+                                       <span t-field="m.date"/>
+                                    </td>
+                                    <td><span t-esc="m.partner_id.document_number if m.partner_id.document_number not in ['0', 0, ''] else '66666666-6'"/></td>
+                                    <td><span t-field="m.partner_id.name"/></td>
+                                    <td class="text-right">
+                                      <span t-esc="totales['neto']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td class="text-right">
+                                      <span t-esc="totales['exento']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td class="text-right">
+                                    	<span t-esc="totales['iva']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td class="text-right">
+                                     <span t-field="m.amount"/>
+                                    </td>
+    	                            </tr>
+                              </t>
+                            <tr>
+                              <td colspan="6" class="text-left" style="font-size:12px !important;">
+                                <strong>Total General</strong>
+                              </td>
+                              <td class="text-right" style="font-size:12px !important;">
+                                  <strong><strong><span t-field="o.total_afecto"/></strong></strong>
+                              </td>
+                              <td class="text-right" style="font-size:12px !important;">
+                                <strong><strong><span t-field="o.total_exento"/></strong></strong>
+                              </td>
+                              <td class="text-right" style="font-size:12px !important;">
+                                  <strong><strong><span t-field="o.total_iva"/></strong></strong>
+                              </td>
+                              <td class="text-right" style="font-size:12px !important;">
+                                  <strong><strong><span t-field="o.total"/></strong></strong>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td colspan="9" class="text-left" style="font-size:12px !important;">
+                                <strong>Cantidad de Documentos</strong>
+                              </td>
+                              <td class="text-right" style="font-size:12px !important;">
+                                <strong><span t-esc="len(o.move_ids)"/></strong>
+                              </td>
+                            </tr>
+                         </tbody>
+  	                 </table>
+  	                 <table class="table table-sm" t-if="o.tipo_operacion == 'BOLETA'">
+  	                     <thead >
+  	                         <tr class="text-center" style="max-height:8px; line-height:12px; font-size:12px !important; padding:0px;">
+  	                            <th>Fecha</th>
+  	                            <th>DTE</th>
+  	                            <th>Tienda</th>
+  	                            <th>Desde</th>
+  	                            <th>Hasta</th>
+  	                            <th># Docs</th>
+  	                            <th>Total</th>
+  	                         </tr>
+  	                     </thead>
+  	                     <tbody>
+  	                     	<t t-set="move_data" t-value="o.env['report.account.move.book.xlsx']._get_lines_by_date(o.move_ids)"/>
+  	                     	<t t-foreach="move_data" t-as="line_key">
+  	                     		<t t-set="line_vals" t-value="move_data[line_key]"/>
+  	                     		<t t-set="move_date" t-value="line_key[0]"/>
+  	                     		<t t-set="document_class" t-value="line_key[1]"/>
+  	                     		<t t-set="tienda_name" t-value="line_key[2]"/>
+                                <tr>
+                                    <td class="text-left">
+                                    	<span t-esc="move_date" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td class="text-right">
+                                    	<span t-field="document_class.sii_code"/>
+                                    </td>
+                                    <td>
+                                    	<span t-esc="tienda_name"/>
+                                    </td>
+                                    <td class="text-right">
+                                    	<span t-esc="line_vals['folio_start']" />
+                                    </td>
+                                    <td class="text-right">
+                                    	<span t-esc="line_vals['folio_end']" />
+                                    </td>
+                                    <td class="text-right">
+                                    	<span t-esc="line_vals['count']" />
+                                    </td>
+                                    <td class="text-right">
+                                     	<span t-esc="line_vals['total']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+    	                        </tr>
+                              </t>
+                         </tbody>
+  	                 </table>
+  	                 <t t-if="o.resumen_ids">
+	  	                 <h3>Resumen</h3>
+	  	                 <table class="table table-sm">
+	  	                     <thead >
+	  	                         <tr class="text-center" style="max-height:8px; line-height:12px; font-size:12px !important; padding:0px;">
+	  	                            <th>DTE</th>
+	  	                            <th>Documentos Emitidos</th>
+	  	                            <th>Afecto</th>
+	  	                            <th>Exento</th>
+	  	                            <th>IVA</th>
+	  	                            <th>Otros Imp.</th>
+	  	                            <th>Total</th>
+	  	                         </tr>
+	  	                     </thead>
+	  	                     <tbody>
+	                              <t t-foreach="o.resumen_ids" t-as="m">
+	                              	<tr>
+	                                    <td><span t-field="m.document_class_id.sii_code"/></td>
+	                                    <td class="text-right">
+	                                      <span t-field="m.documents_count"/>
+	                                    </td>
+	                                    <td class="text-right">
+	                                      <span t-field="m.total_afecto"/>
+	                                    </td>
+	                                    <td class="text-right">
+	                                    	<span t-field="m.total_exento"/>
+	                                    </td>
+	                                    <td class="text-right">
+	                                     <span t-field="m.total_iva"/>
+	                                    </td>
+	                                    <td class="text-right">
+	                                     <span t-field="m.total_otros_imps"/>
+	                                    </td>
+	                                    <td class="text-right">
+	                                     <span t-field="m.total"/>
+	                                    </td>
+	    	                        </tr>
+	                              </t>
+	                          </tbody>
+	                      </table>
+	                  </t>
+                </div>
+            </t>
+          </template>
+
+          <template id="libro_cv" >
+          	<t t-call="web.html_container">
+              <t t-foreach="docs" t-as="o">
+                  <t t-call="l10n_cl_fe.layout_libro" t-lang="o.company_id.partner_id.lang"/>
+              </t>
+             </t>
+          </template>
+
+
+</odoo>

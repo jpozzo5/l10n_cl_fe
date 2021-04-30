@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="account.account_invoices" model="ir.actions.report">
+		<field name="paperformat_id" ref="paperformat_sii_document_electronic_a4" />
+	</record>
+	
+	<record id="account.account_invoices_without_payment" model="ir.actions.report">
+		<field name="paperformat_id" ref="paperformat_sii_document_electronic_a4" />
+	</record>
+	
+	<record id="l10n_cl_fe.action_print_cedible" model="ir.actions.report">
+		<field name="paperformat_id" ref="paperformat_sii_document_electronic_a4" />
+	</record>
+</odoo>

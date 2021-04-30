@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="view_country_state_form_inherit" model="ir.ui.view">
+		<field name="name">res.country.state.form.inherit</field>
+		<field name="model">res.country.state</field>
+		<field name="type">form</field>
+		<field name='inherit_id' ref='base.view_country_state_form' />
+		<field name="arch" type="xml">
+			<field name="code" position="after">
+				<field name="region_id" />
+			</field>
+		</field>
+	</record>
+
+	<record id="view_region_state_tree" model="ir.ui.view">
+		<field name="name">res.country.state.city.tree</field>
+		<field name="model">res.country.state.region</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="code" />
+				<field name="name" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="view_region_state_form" model="ir.ui.view">
+		<field name="name">res.country.state.region.form</field>
+		<field name="model">res.country.state.region</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<group>
+							<field name="name" />
+						</group>
+						<group>
+							<field name="code" />
+						</group>
+					</group>
+					<notebook colspan="2">
+						<page name="child_ids" string="Provincias">
+							<field name="child_ids" />
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="res_city_form_view" model="ir.ui.view">
+		<field name="name">res.city.form</field>
+		<field name="model">res.city</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<group>
+							<field name="name" />
+							<field name="code" />
+						</group>
+						<group>
+							<field name="country_id" options="{'no_create': True}" />
+							<field name="state_id" options="{'no_create': True}" />
+							<field name="zipcode" />
+						</group>
+					</group>
+					<notebook colspan="2">
+						<page string="Localidades">
+							<field name="localidad_ids">
+								<tree editable="bottom">
+									<field name="name" />
+									<field name="code" />
+								</tree>
+								<form>
+									<group>
+										<group>
+											<field name="name" />
+										</group>
+										<group>
+											<field name="code" />
+										</group>
+									</group>
+								</form>
+							</field>
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="res_city_sector_tree_view" model="ir.ui.view">
+		<field name="name">res.city.sector.tree</field>
+		<field name="model">res.city.sector</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name" />
+				<field name="code" />
+				<field name="city_id" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="res_city_sector_form_view" model="ir.ui.view">
+		<field name="name">res.city.sector.form</field>
+		<field name="model">res.city.sector</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<group>
+							<field name="name" />
+							<field name="city_id" />
+						</group>
+						<group>
+							<field name="code" />
+						</group>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="res_country_state_region_action"
+		model="ir.actions.act_window">
+		<field name="name">Regiones</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">res.country.state.region</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_id" ref="view_region_state_tree" />
+	</record>
+
+	<menuitem id="res_country_state_region_menu" name="Region"
+		sequence="2" parent="contacts.menu_localisation"
+		action="res_country_state_region_action" />
+
+	<record id="res_city_sector_action"
+		model="ir.actions.act_window">
+		<field name="name">Localidades</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">res.city.sector</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_id" ref="res_city_sector_tree_view" />
+	</record>
+
+	<menuitem id="res_city_sector_menu" name="Localidades"
+		sequence="5" parent="contacts.menu_localisation"
+		action="res_city_sector_action" />
+</odoo>

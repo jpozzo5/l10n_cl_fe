@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record id="sale_config_form_view" model="ir.ui.view">
+			<field name="name">sale.config.settings.form</field>
+			<field name="model">res.config.settings</field>
+			<field name="inherit_id" ref="sale.res_config_settings_view_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//button[@name='%(product.attribute_action)d']/.."
+					position="after">
+					<div class="mt16">
+						<label for="show_atributes_on_reports" />
+						<div class="text-muted">
+							Columnas especificas para los atributos(Talla y Color) 
+						</div>
+						<div>
+							<field name="show_atributes_on_reports" class="o_light_label" widget="radio" />
+						</div>
+					</div>
+					<div class="mt16">
+						<label for="show_quantities_grouped" />
+						<div class="text-muted">
+							Reducir espacio en reportes 
+						</div>
+						<div>
+							<label for="max_number_documents" class="o_light_label" />
+                            <field name="max_number_documents" />
+                        </div>
+						<div class="o_setting_left_pane">
+                            <field name="print_total_qty_reports" />
+                        </div>
+                        <div>
+							<label for="print_total_qty_reports" class="o_light_label" />
+						</div>
+						<div>
+							<field name="show_quantities_grouped" class="o_light_label" widget="radio" />
+						</div>
+					</div>
+					<span class="o_form_label">Atributos para Tamaño</span>
+					<div class="text-muted">
+						Configure los atributos para agrupar atributos en reportes pdf
+					</div>
+					<div class="row">
+						<label string="Tamaño Calzado" for="size_calzado_id" class="col-md-4 o_light_label" />
+						<field name="size_calzado_id" class="o_light_label"
+							options="{'no_quick_create': True, 'no_open': True}" />
+					</div>
+					<div class="row">
+						<label string="Tamaño Vestuario" for="size_vestuario_id"
+							class="col-md-4 o_light_label" />
+						<field name="size_vestuario_id" class="o_light_label"
+							options="{'no_quick_create': True, 'no_open': True}" />
+					</div>
+					<div class="row">
+						<label string="Color" for="color_id" class="col-md-4 o_light_label" />
+						<field name="color_id" class="o_light_label"
+							options="{'no_quick_create': True, 'no_open': True}" />
+					</div>
+				</xpath>
+				<xpath expr="//label[@for='group_discount_per_so_line']/.." position="inside">
+					<div class="mt16" attrs="{'invisible': [('group_discount_per_so_line', '=', False)]}">
+						<span class="o_form_label" >Mostrar Descuento en reportes como</span>
+						<field name="show_discount_on_report" class="o_light_label" widget="radio" />
+					</div>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</odoo>
